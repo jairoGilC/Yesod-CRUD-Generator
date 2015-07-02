@@ -1,0 +1,1 @@
+function deletePost(deleteUrl){$.ajax({url:deleteUrl,type:'DELETE',success:function(result){location.reload()}})}

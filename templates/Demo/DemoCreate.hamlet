@@ -1,0 +1,8 @@
+<div .container>
+    <form method=post action=@{actionR} encType=#{encoding}>
+         <div .row>
+             ^{widget}   
+            <div .row .clearfix .visible-xs-block>
+            <button .btn .btn-success> 
+               <span .glyphicon .glyphicon-floppy-saved>
+               default text create

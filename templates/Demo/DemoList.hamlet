@@ -1,0 +1,32 @@
+<div>
+
+<h1> DEMO
+$if null demos
+    <p> There are no demos 
+$else
+    <table .table .table-responsive .table-hover>
+        <thead>
+                     <th> identificate                 
+                     <th> edit
+                     <th> delete
+          
+        $forall Entity demoId demo <- demos
+                        
+            <tbody>
+                <tr>
+                    <td> 
+                        #{demoFieldOne demo}
+                    
+                   <td >
+                        <button  onclick=deletePost('@{DemoDeleteR demoId}') .btn .btn-danger>
+                              <span .glyphicon .glyphicon-trash>
+                            delete 
+
+                   <td>
+                       <a href=@{DemoEditR demoId} .btn .btn-warning .pull-right> 
+                          <span .glyphicon .glyphicon-edit>
+                          edit
+
+<a  href=@{DemoNewR} .btn .btn-primary .pull-right>
+                              <span .glyphicon .glyphicon-plus>
+                              create

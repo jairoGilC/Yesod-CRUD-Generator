@@ -1,0 +1,40 @@
+-- import Yesod.Form.Fields
+-- import Language.Haskell.TH.Syntax
+-- import Text.Parsec.Pos()
+-- import Text.Parsec.Char()
+-- import Text.Parsec.String()
+-- import Text.Parsec.Prim()
+-- import Text.Parsec.Combinator()
+-- import Control.Applicative ((<$>),(<*>),(*>),(<$),(<*))
+-- import Language.Haskell.TH.Quote()
+-- import Data.Typeable
+-- import Database.Persist
+-- import Yesod.Form.Functions
+-- import Yesod.Form.Types
+-- import Yesod.Core
+-- import Yesod.Yesod
+
+ 
+
+
+
+data Exp = EInt Int 
+         | EAdd Exp Exp
+         | ESub Exp Exp
+         | EMul Exp Exp
+         | EDiv Exp Exp
+         | EMetaVar String
+         deriving(Show,Typeable,Data)
+         
+-- test2 :: Handler Html 
+{-
+test3 name = 
+
+build_p2 name =
+    return [ FunD p1 
+             [ Clause [TupP [VarP a,VarP b]] (NormalB (AppE (VarE c) (VarE a))) []]
+           ]
+    ] where
+       method = "get" ++ name ++ "NewR"
+       p1 = mkName method
+-}
