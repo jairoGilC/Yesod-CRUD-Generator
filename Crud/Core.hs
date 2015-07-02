@@ -25,7 +25,7 @@ getNew :: String -> String -> TH.Q TH.Dec
 getNew name formName = do
            let method = TH.mkName $ "get" ++ name ++ "NewR"
                form = TH.mkName $ formName
-               formV = return (TH.VarE formName)
+               formV = return (TH.VarE form)
            body <- [| do 
              (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $formV Nothing
              defaultLayout $ do
