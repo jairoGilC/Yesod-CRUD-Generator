@@ -1,8 +1,10 @@
 module Handler.Demo where
 
 import Import
+import Crud.Core
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
                               )
+
 
 --Aform From Entity Demo
 demoForm :: Maybe Demo -> AForm Handler Demo
@@ -18,12 +20,16 @@ demo2Form   demo = Demo2
 
 --CRUD 
 --Create
+getNew "Demo" "demoForm"
+
+{-
 getDemoNewR ::  Handler Html 
 getDemoNewR = do 
                (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm Nothing
                defaultLayout $ do
                     let actionR = DemoNewR                          
                     $(widgetFile "Demo/DemoCreate") 
+-}
 
 postDemoNewR :: Handler Html
 postDemoNewR = do

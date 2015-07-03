@@ -11,26 +11,19 @@ import Import
 import Yesod.Form.Bootstrap3
 
 
-
-demoForm :: Maybe Demo -> AForm Handler Demo
-demoForm   demo = Demo 
-                <$> areq textField "fieldone" (demoFieldOne <$> demo)
-                <*> areq intField "fieldTwo" (demoFieldTwo <$> demo) 
-                <*> areq boolField "fieldThree" (demoFieldThree <$> demo) 
-                <*> areq dayField "fieldFour" (demoFieldFour <$> demo) 
-
 demoId = "demoId"
 
-getNew :: String -> String -> TH.Q TH.Dec
+getNew :: String -> String -> TH.Q [TH.Dec]
 getNew name formName = do
            let method = TH.mkName $ "get" ++ name ++ "NewR"
-               form = TH.mkName $ formName
+               form = TH.varE $ TH.mkName formName
            body <- [| do 
              (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form Nothing
              defaultLayout $ do
                 let actionR = DemoNewR                          
                 $(widgetFile "Demo/DemoCreate") |]
-           TH.funD method [return (TH.Clause [] (TH.NormalB body) [])]
+           (:[]) <$> TH.funD method [return (TH.Clause [] (TH.NormalB body) [])]
+           
 
 {-
 postNew :: String -> (TH.Q TH.Exp)
