@@ -21,6 +21,8 @@ demo2Form   demo = Demo2
 --CRUD 
 --Create
 getNew "Demo" "demoForm"
+postNew "Demo" "demoForm"
+-- getEdit "Demo" "DemoId" "demoForm"
 
 {-
 getDemoNewR ::  Handler Html 
@@ -29,7 +31,7 @@ getDemoNewR = do
                defaultLayout $ do
                     let actionR = DemoNewR                          
                     $(widgetFile "Demo/DemoCreate") 
--}
+
 
 postDemoNewR :: Handler Html
 postDemoNewR = do
@@ -43,11 +45,6 @@ postDemoNewR = do
                      $(widgetFile "Demo/DemoCreate")
 
 
---Delete
-deleteDemoDeleteR ::  DemoId -> Handler Html
-deleteDemoDeleteR demoId = do
-                            runDB $ delete demoId
-                            redirect DemoListR
 
 --Edit
 getDemoEditR :: DemoId -> Handler Html
@@ -57,6 +54,7 @@ getDemoEditR demoId  = do
                defaultLayout $ do
                    let actionR = DemoEditR demoId       
                    $(widgetFile "Demo/DemoCreate")
+-}
 
 postDemoEditR :: DemoId -> Handler Html
 postDemoEditR demoId  = do
@@ -70,6 +68,11 @@ postDemoEditR demoId  = do
                      let actionR = DemoEditR demoId                           
                      $(widgetFile "Demo/DemoCreate") 
 
+--Delete
+deleteDemoDeleteR ::  DemoId -> Handler Html
+deleteDemoDeleteR demoId = do
+                            runDB $ delete demoId
+                            redirect DemoListR
 
 --List
 getDemoListR ::  Handler Html
