@@ -17,10 +17,11 @@ getNew :: String -> String -> TH.Q [TH.Dec]
 getNew name formName = do
            let method = TH.mkName $ "get" ++ name ++ "NewR"
                form = TH.varE $ TH.mkName formName
+               action = TH.conE $ TH.mkName $ name ++ "NewR"
            body <- [| do 
              (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form Nothing
              defaultLayout $ do
-                let actionR = DemoNewR                          
+                let actionR = $action                          
                 $(widgetFile "Demo/DemoCreate") |]
            (:[]) <$> TH.funD method [return (TH.Clause [] (TH.NormalB body) [])]
 
@@ -29,31 +30,35 @@ postNew :: String -> String -> TH.Q [TH.Dec]
 postNew name formName = do
            let method = TH.mkName $ "post" ++ name ++ "NewR"
                form = TH.varE $ TH.mkName formName            
-           body <- [| do
+               action = TH.conE $ TH.mkName $ name ++ "NewR"
+               body = [| do
                 ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ $form  Nothing
                 case result of
                      FormSuccess demo -> do 
                                  _ <- runDB $ insert demo
                                  redirect DemoListR
                      _ -> defaultLayout $ do
-                     let actionR = DemoNewR                
+                     let actionR = $action                
                      $(widgetFile "Demo/DemoCreate")|]  
-           (:[]) <$> TH.funD method [return (TH.Clause [] (TH.NormalB body) [])]
+           (:[]) <$> TH.funD method [TH.clause [] (TH.normalB body) []]
 
 -- getEdit :: String -> Key -> String -> TH.Q [TH.Dec]
-getEdit :: String -> String -> String -> TH.Q [TH.Dec]
-getEdit name nameId formName = do
-           let method = TH.mkName $ "get" ++ name ++ "EditR"
-               form = TH.varE $ TH.mkName formName
-           entityId <- TH.varP $ TH.mkName nameId
+getEdit :: String -> String -> TH.Q [TH.Dec]
+getEdit name formName = do
+  entityName <- TH.newName "eId"
+  let method = TH.mkName $ "get" ++ name ++ "EditR"
+      form = TH.varE $ TH.mkName formName
+      action = TH.conE $ TH.mkName $ name ++ "EditR"
+      entityId = TH.varE entityName
+      entityParam = TH.varP entityName
            --  
-           body <- [|  do 
-               demo <- runDB $ get404 entityId  
-               (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form  (Just demo)
-               defaultLayout $ do
-                   let actionR = DemoEditR entityId       
-                   $(widgetFile "Demo/DemoCreate") |]
-           (:[]) <$> TH.funD method [return (TH.Clause [entityId] (TH.NormalB body) [])]
+      body = [| do 
+             demo <- runDB $ get404 $entityId  
+             (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form  (Just demo)
+             defaultLayout $ do
+               let actionR = $action $entityId
+               $(widgetFile "Demo/DemoCreate") |]
+  (:[]) <$> TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
 {-
 listCrud :: String -> (TH.Q TH.Exp)
 listCrud name =  do  

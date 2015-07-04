@@ -20,9 +20,9 @@ demo2Form   demo = Demo2
 
 --CRUD 
 --Create
-getNew "Demo" "demoForm"
+getNew  "Demo" "demoForm"
 postNew "Demo" "demoForm"
--- getEdit "Demo" "DemoId" "demoForm"
+getEdit "Demo" "demoForm"
 
 {-
 getDemoNewR ::  Handler Html 
