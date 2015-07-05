@@ -1,8 +1,8 @@
 <div>
 
-<h1> DEMO
-$if null demos
-    <p> There are no demos 
+<h1> DATA
+$if null list
+    <p> There are no data 
 $else
     <table .table .table-responsive .table-hover>
         <thead>
@@ -10,7 +10,7 @@ $else
                      <th> edit
                      <th> delete
           
-        $forall Entity demoId demo <- demos
+        $forall Entity demoId demo <- list
                         
             <tbody>
                 <tr>

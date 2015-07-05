@@ -21,79 +21,12 @@ demo2Form   demo = Demo2
 --CRUD 
 --Create
 getNew   "Demo" "demoForm"
-postNew  "Demo" "demoForm"
+postNew  "Demo" "demoForm" "DemoListR"
 getEdit  "Demo" "demoForm"
-postEdit "Demo" "demoForm"
+postEdit "Demo" "demoForm" "DemoListR"
 
-deleteCrud "Demo"
+deleteCrud "Demo" "DemoListR"
+listCrud "Demo"
 
-
--- listCrud "Demo"
-
-{-
-getDemoNewR ::  Handler Html 
-getDemoNewR = do 
-               (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm Nothing
-               defaultLayout $ do
-                    let actionR = DemoNewR                          
-                    $(widgetFile "Demo/DemoCreate") 
-
-
-postDemoNewR :: Handler Html
-postDemoNewR = do
-                ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  Nothing
-                case result of
-                     FormSuccess demo -> do 
-                                 _ <- runDB $ insert demo
-                                 redirect DemoListR
-                     _ -> defaultLayout $ do
-                     let actionR = DemoNewR                
-                     $(widgetFile "Demo/DemoCreate")
-
-
-
---Edit
-getDemoEditR :: DemoId -> Handler Html
-getDemoEditR demoId  = do
-               demo <- runDB $ get404 demoId  
-               (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  (Just demo)
-               defaultLayout $ do
-                   let actionR = DemoEditR demoId       
-                   $(widgetFile "Demo/DemoCreate")
-
-
-postDemoEditR :: DemoId -> Handler Html
-postDemoEditR demoId  = do
-                demo <- runDB $ get404 demoId
-                ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  (Just demo)
-                case result of
-                     FormSuccess demoResult -> do 
-                                 _ <- runDB $ replace demoId  demoResult
-                                 redirect DemoListR
-                     _ -> defaultLayout $ do     
-                     let actionR = DemoEditR demoId                           
-                     $(widgetFile "Demo/DemoCreate") 
-
-
-
-
---Delete
-deleteDemoDeleteR ::  DemoId -> Handler Html
-deleteDemoDeleteR demoId = do
-                            runDB $ delete demoId
-                            redirect DemoListR
--}
-
-
-{-
-resultsForPage pageNumber = do
-    let resultsPerPage = 10
-    selectList
-        []
-        [ OffsetBy $ (pageNumber - 1) * resultsPerPage ]-}
---List
-getDemoListR ::  Handler Html
-getDemoListR  = do
-                    demos <- runDB $ selectList [] []                   
-                    defaultLayout $ do
-                       $(widgetFile "Demo/DemoList")
+getNew  "Demo2" "demo2Form"
+postNew "Demo2" "demo2Form" "DemoListR"
