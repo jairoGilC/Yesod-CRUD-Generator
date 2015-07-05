@@ -20,9 +20,12 @@ demo2Form   demo = Demo2
 
 --CRUD 
 --Create
-getNew  "Demo" "demoForm"
-postNew "Demo" "demoForm"
-getEdit "Demo" "demoForm"
+getNew   "Demo" "demoForm"
+postNew  "Demo" "demoForm"
+getEdit  "Demo" "demoForm"
+postEdit "Demo" "demoForm"
+deleteCrud "Demo"
+-- listCrud "Demo"
 
 {-
 getDemoNewR ::  Handler Html 
@@ -54,7 +57,7 @@ getDemoEditR demoId  = do
                defaultLayout $ do
                    let actionR = DemoEditR demoId       
                    $(widgetFile "Demo/DemoCreate")
--}
+
 
 postDemoEditR :: DemoId -> Handler Html
 postDemoEditR demoId  = do
@@ -68,19 +71,17 @@ postDemoEditR demoId  = do
                      let actionR = DemoEditR demoId                           
                      $(widgetFile "Demo/DemoCreate") 
 
+
+
+
+
 --Delete
 deleteDemoDeleteR ::  DemoId -> Handler Html
 deleteDemoDeleteR demoId = do
                             runDB $ delete demoId
                             redirect DemoListR
 
---List
-getDemoListR ::  Handler Html
-getDemoListR  = do
-                    demos <- runDB $ selectList [] []                   
-                    defaultLayout $ do
-                       $(widgetFile "Demo/DemoList")
-
+-}
 
 {-
 resultsForPage pageNumber = do
@@ -88,3 +89,9 @@ resultsForPage pageNumber = do
     selectList
         []
         [ OffsetBy $ (pageNumber - 1) * resultsPerPage ]-}
+--List
+getDemoListR ::  Handler Html
+getDemoListR  = do
+                    demos <- runDB $ selectList [] []                   
+                    defaultLayout $ do
+                       $(widgetFile "Demo/DemoList")

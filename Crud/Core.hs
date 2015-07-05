@@ -11,19 +11,18 @@ import Import
 import Yesod.Form.Bootstrap3
 
 
--- demoId = "demoId"
 
 getNew :: String -> String -> TH.Q [TH.Dec]
 getNew name formName = do
            let method = TH.mkName $ "get" ++ name ++ "NewR"
                form = TH.varE $ TH.mkName formName
                action = TH.conE $ TH.mkName $ name ++ "NewR"
-           body <- [| do 
-             (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form Nothing
-             defaultLayout $ do
-                let actionR = $action                          
-                $(widgetFile "Demo/DemoCreate") |]
-           (:[]) <$> TH.funD method [return (TH.Clause [] (TH.NormalB body) [])]
+               body = [| do
+                 (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form Nothing
+                 defaultLayout $ do
+                    let actionR = $action                          
+                    $(widgetFile "Demo/DemoCreate") |]
+           (:[]) <$> TH.funD method [TH.clause [] (TH.normalB body) []]
 
 
 postNew :: String -> String -> TH.Q [TH.Dec]
@@ -34,15 +33,14 @@ postNew name formName = do
                body = [| do
                 ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ $form  Nothing
                 case result of
-                     FormSuccess demo -> do 
-                                 _ <- runDB $ insert demo
+                     FormSuccess entity -> do 
+                                 _ <- runDB $ insert entity
                                  redirect DemoListR
                      _ -> defaultLayout $ do
                      let actionR = $action                
                      $(widgetFile "Demo/DemoCreate")|]  
            (:[]) <$> TH.funD method [TH.clause [] (TH.normalB body) []]
 
--- getEdit :: String -> Key -> String -> TH.Q [TH.Dec]
 getEdit :: String -> String -> TH.Q [TH.Dec]
 getEdit name formName = do
   entityName <- TH.newName "eId"
@@ -51,40 +49,53 @@ getEdit name formName = do
       action = TH.conE $ TH.mkName $ name ++ "EditR"
       entityId = TH.varE entityName
       entityParam = TH.varP entityName
-           --  
       body = [| do 
-             demo <- runDB $ get404 $entityId  
-             (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form  (Just demo)
+             entity <- runDB $ get404 $entityId  
+             (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form  (Just entity)
              defaultLayout $ do
                let actionR = $action $entityId
                $(widgetFile "Demo/DemoCreate") |]
   (:[]) <$> TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
-{-
-listCrud :: String -> (TH.Q TH.Exp)
-listCrud name =  do  
-           let thName = TH.mkName $ "get" ++ name ++ "ListR"                      
-           [|    do demos <- runDB $ selectList [] []                   
-                    defaultLayout $ do
-                       $(widgetFile "Demo/DemoList")|]                    
 
-deleteCrud :: String -> (TH.Q TH.Exp)
-deleteCrud name  =  do
-          let thName = TH.mkName name            
-          [| do runDB $ delete demoId
-                redirect DemoListR |]
-
-
-postEdit :: String -> (TH.Q TH.Exp)
-postEdit name = do
-           let thName = TH.mkName $ "post" ++ name ++ "EditR"
-           [|  do 
-                demo <- runDB $ get404 demoId
-                ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  (Just demo)
+postEdit :: String -> String -> TH.Q [TH.Dec]
+postEdit name formName = do
+  entityName <- TH.newName "eId"
+  let method = TH.mkName $ "post" ++ name ++ "EditR"
+      form = TH.varE $ TH.mkName formName
+      action = TH.conE $ TH.mkName $ name ++ "EditR"
+      entityId = TH.varE entityName
+      entityParam = TH.varP entityName
+      body =    [|  do 
+                entity <- runDB $ get404 $entityId
+                ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ $form  (Just entity)
                 case result of
-                     FormSuccess demoResult -> do 
-                                 _ <- runDB $ replace demoId  demoResult
+                     FormSuccess result -> do 
+                                 _ <- runDB $ replace $entityId  result
                                  redirect DemoListR
                      _ -> defaultLayout $ do     
-                     let actionR = DemoEditR demoId                           
+                     let actionR = $action $entityId                          
                      $(widgetFile "Demo/DemoCreate") |]
--}
+  (:[]) <$> TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
+
+deleteCrud :: String  -> TH.Q [TH.Dec]
+deleteCrud name  =  do
+  entityName <- TH.newName "eId"
+  let method = TH.mkName $ "delete" ++ name ++ "DeleteR"
+      entityId = TH.varE entityName
+      entityParam = TH.varP entityName            
+      body = [| do 
+             runDB $ delete $entityId
+             redirect DemoListR |]
+  (:[]) <$> TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
+
+
+listCrud :: String  -> TH.Q [TH.Dec]
+listCrud name =  do  
+  let method = TH.mkName $  name ++ "ListR"          
+      body = [| do  demos <- runDB $ selectList [] []                   
+                    defaultLayout $ do
+                       $(widgetFile "Demo/DemoList")|]                    
+  (:[]) <$> TH.funD method [TH.clause [] (TH.normalB body) []]
+
+
+
