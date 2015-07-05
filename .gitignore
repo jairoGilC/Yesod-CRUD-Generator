@@ -24,4 +24,5 @@ docs/temp/*
 *.log
 *.aux
 *.pdf
-
+.stack-work
+stack.yaml
