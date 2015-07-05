@@ -14,15 +14,17 @@ import Yesod.Form.Bootstrap3
 
 getNew :: String -> String -> TH.Q [TH.Dec]
 getNew name formName = do
-           let method = TH.mkName $ "get" ++ name ++ "NewR"
-               form = TH.varE $ TH.mkName formName
-               action = TH.conE $ TH.mkName $ name ++ "NewR"
-               body = [| do
+  let method = TH.mkName $ "get" ++ name ++ "NewR"
+      form = TH.varE $ TH.mkName formName
+      action = TH.conE $ TH.mkName $ name ++ "NewR"
+      body = [| do
                  (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form Nothing
                  defaultLayout $ do
                     let actionR = $action                          
                     $(widgetFile "Demo/DemoCreate") |]
-           (:[]) <$> TH.funD method [TH.clause [] (TH.normalB body) []]
+  typ <- TH.sigD method [t| Handler Html |]
+  fun <- TH.funD method [TH.clause [] (TH.normalB body) []]
+  return [typ,fun]
 
 
 postNew :: String -> String -> TH.Q [TH.Dec]
@@ -82,12 +84,14 @@ deleteCrud name  =  do
   entityName <- TH.newName "eId"
   let method = TH.mkName $ "delete" ++ name ++ "DeleteR"
       entityId = TH.varE entityName
-      entityParam = TH.varP entityName            
+      entityParam = TH.varP entityName
+      entityType  = TH.conT $ TH.mkName $ name ++ "Id"
       body = [| do 
              runDB $ delete $entityId
              redirect DemoListR |]
-  (:[]) <$> TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
-
+  typ <- TH.sigD method [t| $entityType -> Handler Html |] 
+  fun <- TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
+  return [typ,fun]
 
 listCrud :: String  -> TH.Q [TH.Dec]
 listCrud name =  do  

@@ -24,7 +24,10 @@ getNew   "Demo" "demoForm"
 postNew  "Demo" "demoForm"
 getEdit  "Demo" "demoForm"
 postEdit "Demo" "demoForm"
+
 deleteCrud "Demo"
+
+
 -- listCrud "Demo"
 
 {-
@@ -74,14 +77,13 @@ postDemoEditR demoId  = do
 
 
 
-
 --Delete
 deleteDemoDeleteR ::  DemoId -> Handler Html
 deleteDemoDeleteR demoId = do
                             runDB $ delete demoId
                             redirect DemoListR
-
 -}
+
 
 {-
 resultsForPage pageNumber = do
