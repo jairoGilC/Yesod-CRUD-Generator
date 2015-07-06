@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE RankNTypes #-}
 
 module Crud.Core where
 
@@ -9,7 +10,7 @@ import Language.Haskell.TH.Quote
 import Data.Data
 import Import
 import Yesod.Form.Bootstrap3
-
+import Text.Blaze
 
 
 getNew :: String -> String -> TH.Q [TH.Dec]
@@ -43,7 +44,8 @@ postNew name formName redirectName = do
                      let actionR = $action                
                      formHamlet widget encoding actionR|]  
            typ <- TH.sigD method [t|  HandlerT App IO Html |]          
-           (:[]) <$> TH.funD method [TH.clause [] (TH.normalB body) []]
+           fun <- TH.funD method [TH.clause [] (TH.normalB body) []]
+           return [typ,fun]
 
 getEdit :: String -> String -> TH.Q [TH.Dec]
 getEdit name formName = do
@@ -60,8 +62,9 @@ getEdit name formName = do
              defaultLayout $ do
                let actionR = $action $entityId
                formHamlet widget encoding actionR |]
-  typ <- TH.sigD method [t| $entityType ->  HandlerT App IO Html |]                 
-  (:[]) <$> TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
+  typ <- TH.sigD method [t| $entityType ->  HandlerT App IO Html |]   
+  fun <- TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
+  return [typ,fun]
 
 postEdit :: String -> String -> String -> TH.Q [TH.Dec]
 postEdit name formName redirectName = do
@@ -83,8 +86,9 @@ postEdit name formName redirectName = do
                      _ -> defaultLayout $ do     
                      let actionR = $action $entityId                          
                      formHamlet widget encoding actionR |]
-  typ <- TH.sigD method [t| $entityType ->  HandlerT App IO Html |]                      
-  (:[]) <$> TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
+  typ <- TH.sigD method [t| $entityType ->  HandlerT App IO Html |]         
+  fun <- TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
+  return [typ,fun]
 
 deleteCrud :: String  -> String ->  TH.Q [TH.Dec]
 deleteCrud name  redirectName=  do
@@ -107,11 +111,14 @@ listCrud name =  do
       body = [| do  list <- runDB $ selectList [] []                   
                     defaultLayout $ do
                        $(widgetFile "Demo/DemoList")|]  
-  typ <- TH.sigD method [t|  HandlerT App IO Html |]                                         
-  (:[]) <$> TH.funD method [TH.clause [] (TH.normalB body) []]
+  typ <- TH.sigD method [t|  HandlerT App IO Html |]    
+  fun <- TH.funD method [TH.clause [] (TH.normalB body) []]
+  return [typ,fun]
 
-
-
+formHamlet :: forall site (m :: * -> *) a a1.
+                    (ToMarkup a, MonadThrow m,
+                     MonadBaseControl IO m, MonadIO m, ToWidget site a1) =>
+                    a1 -> a -> Route site -> WidgetT site m ()
 formHamlet widget encoding actionR = [whamlet|
 <div .container>
     <form method=post action=@{actionR} encType=#{encoding}>
