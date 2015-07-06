@@ -12,3 +12,6 @@
 /demoList DemoListR  GET
 
 /demo2New Demo2NewR GET POST
+/demo2Edit/#Demo2Id Demo2EditR GET POST
+/demo2Delete/#Demo2Id Demo2DeleteR DELETE
+/demo2List Demo2ListR  GET

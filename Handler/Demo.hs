@@ -2,8 +2,7 @@ module Handler.Demo where
 
 import Import
 import Crud.Core
-import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
-                              )
+
 
 
 --Aform From Entity Demo
@@ -26,7 +25,12 @@ getEdit  "Demo" "demoForm"
 postEdit "Demo" "demoForm" "DemoListR"
 
 deleteCrud "Demo" "DemoListR"
-listCrud "Demo"
+listCrud "Demo" "demoFieldOne"
 
-getNew  "Demo2" "demo2Form"
-postNew "Demo2" "demo2Form" "DemoListR"
+getNew   "Demo2" "demo2Form"
+postNew  "Demo2" "demo2Form" "Demo2ListR"
+getEdit  "Demo2" "demo2Form"
+postEdit "Demo2" "demo2Form" "Demo2ListR"
+
+deleteCrud "Demo2" "Demo2ListR"
+listCrud "Demo2" "demo2FieldOne"

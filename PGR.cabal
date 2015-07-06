@@ -27,7 +27,7 @@ library
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
-        ghc-options:   -Wall -fwarn-tabs -O0 -ddump-splices
+        ghc-options:   -Wall -fwarn-tabs -O0 
     else
         ghc-options:   -Wall -fwarn-tabs -O2
 
@@ -77,6 +77,7 @@ library
                  , monad-logger                  >= 0.3        && < 0.4
                  , fast-logger                   >= 2.2        && < 2.4
                  , wai-logger                    >= 2.2        && < 2.3
+                 , blaze-markup                  >= 0.7.0.2    && < 0.8
                  , file-embed
                  , safe
                  , unordered-containers
