@@ -86,9 +86,9 @@ postEdit name formName redirectName = do
                      _ -> defaultLayout $ do     
                      let actionR = $action $entityId                          
                      formHamlet widget encoding actionR |]
-  typ <- TH.sigD method [t| $entityType ->  HandlerT App IO Html |]                      
+  typ <- TH.sigD method [t| $entityType ->  HandlerT App IO Html |]         
   fun <- TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
-  return [typ,fun] 
+  return [typ,fun]
 
 deleteCrud :: String  -> String ->  TH.Q [TH.Dec]
 deleteCrud name  redirectName=  do
