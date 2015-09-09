@@ -4,33 +4,24 @@ import Import
 import Crud.Core
 
 
-
 --Aform From Entity Demo
-demoForm :: Maybe Demo -> AForm Handler Demo
-demoForm   demo = Demo 
-                <$> areq textField "fieldone" (demoFieldOne <$> demo)
-                <*> areq intField "fieldTwo" (demoFieldTwo <$> demo) 
-                <*> areq boolField "fieldThree" (demoFieldThree <$> demo) 
-                <*> areq dayField "fieldFour" (demoFieldFour <$> demo) 
---AForm demo 2
-demo2Form :: Maybe Demo2 -> AForm Handler Demo2
-demo2Form   demo = Demo2 
-                <$> areq textField "fieldone" (demo2FieldOne <$> demo)
+iglesiaForm :: Maybe Iglesia -> AForm Handler Iglesia
+iglesiaForm   iglesia = Iglesia 
+                <$> areq textField "nombre" (iglesiaNombre <$> iglesia)
+                <*> areq textField "direccion" (iglesiaDireccion <$> iglesia) 
+                <*> areq textField "telefono" (iglesiaTelefono <$> iglesia) 
+                <*> areq textField "ciudad" (iglesiaCiudad <$> iglesia)
+
+--                <*> areq textField "prueba" (iglesiaPrueba <$> iglesia)
 
 --CRUD 
 --Create
-getNew   "Demo" "demoForm"
-postNew  "Demo" "demoForm" "DemoListR"
-getEdit  "Demo" "demoForm"
-postEdit "Demo" "demoForm" "DemoListR"
+getNewRoute   "Iglesia" "iglesiaForm"
+postNewRoute  "Iglesia" "iglesiaForm" "IglesiaListR"
+getEditRoute  "Iglesia" "iglesiaForm"
+postEditRoute "Iglesia" "iglesiaForm" "IglesiaListR"
 
-deleteCrud "Demo" "DemoListR"
-listCrud "Demo" "demoFieldOne"
+deleteCrudRoute "Iglesia" "IglesiaListR"
+listCrudRoute "Iglesia" "iglesiaNombre"
 
-getNew   "Demo2" "demo2Form"
-postNew  "Demo2" "demo2Form" "Demo2ListR"
-getEdit  "Demo2" "demo2Form"
-postEdit "Demo2" "demo2Form" "Demo2ListR"
 
-deleteCrud "Demo2" "Demo2ListR"
-listCrud "Demo2" "demo2FieldOne"

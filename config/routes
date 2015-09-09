@@ -4,14 +4,15 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
-/ HomeR GET POST
+/ HomeR GET 
 
-/demoNew DemoNewR GET POST
-/demoEdit/#DemoId DemoEditR GET POST
-/demoDelete/#DemoId DemoDeleteR DELETE
-/demoList DemoListR  GET
+/iglesiaNew IglesiaNewR GET POST
+/iglesiaEdit/#IglesiaId IglesiaEditR GET POST
+/iglesiaDelete/#IglesiaId IglesiaDeleteR DELETE
+/iglesiaList IglesiaListR  GET
 
-/demo2New Demo2NewR GET POST
-/demo2Edit/#Demo2Id Demo2EditR GET POST
-/demo2Delete/#Demo2Id Demo2DeleteR DELETE
-/demo2List Demo2ListR  GET
+/intencionNew IntencionNewR GET POST
+/intencionEdit/#IntencionId IntencionEditR GET POST
+/intencionDelete/#IntencionId IntencionDeleteR DELETE
+/intencionList IntencionListR  GET
+    

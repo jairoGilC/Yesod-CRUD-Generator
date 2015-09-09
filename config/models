@@ -9,12 +9,18 @@ Email
     verkey Text Maybe
     UniqueEmail email
 
-Demo
-    fieldOne Text 
-    fieldTwo Int
-    fieldThree Bool
-    fieldFour  Day
+Iglesia
+    nombre Text 
+    direccion Text
+    telefono Text
+    ciudad  Text
 
-Demo2
-    fieldOne Text
+--    prueba Text
+
+Intencion
+    intencion    Text
+    peticionario Text
+    fecha        Day 
+    iglesia      IglesiaId
+    
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

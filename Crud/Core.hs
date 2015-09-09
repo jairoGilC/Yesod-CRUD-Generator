@@ -12,11 +12,91 @@ import Import
 import Yesod.Form.Bootstrap3
 import Text.Blaze
 
-
-getNew :: String -> String -> TH.Q [TH.Dec]
-getNew name formName = do
+{-
+Este conjunto de operaciones permite al programador realizar 
+las operaciones de crear  
+-}
+getNewRoute :: String -> String -> TH.Q [TH.Dec]
+getNewRoute name formName = do
   let method = TH.mkName $ "get" ++ name ++ "NewR"
-      form = TH.varE $ TH.mkName formName
+  getNew name formName method
+
+getNewMethod :: String -> String -> TH.Q [TH.Dec]
+getNewMethod name formName = do
+  let method = TH.mkName $ "get" ++ name ++ "New"
+  getNew name formName method
+
+postNewRoute :: String -> String -> String  -> TH.Q [TH.Dec]
+postNewRoute name formName redirectName = do
+  let method = TH.mkName $ "post" ++ name ++ "NewR"
+  postNew name formName redirectName method
+
+postNewMethod :: String -> String -> String  -> TH.Q [TH.Dec]
+postNewMethod name formName redirectName = do
+  let method = TH.mkName $ "post" ++ name ++ "New"
+  postNew name formName redirectName method
+
+{-
+Este conjunto de operaciones permite al programador realizar 
+las operaciones de Editar  
+-}
+getEditRoute :: String -> String -> TH.Q [TH.Dec]
+getEditRoute name formName = do
+  let method = TH.mkName $ "get" ++ name ++ "EditR"
+  getEdit name formName method
+
+getEditMethod :: String -> String -> TH.Q [TH.Dec]
+getEditMethod name formName = do
+  let method = TH.mkName $ "get" ++ name ++ "Edit"
+  getEdit name formName method
+
+postEditRoute :: String -> String -> String  -> TH.Q [TH.Dec]
+postEditRoute name formName redirectName = do
+  let method = TH.mkName $ "post" ++ name ++ "EditR"
+  postEdit name formName redirectName method
+
+postEditMethod :: String -> String -> String  -> TH.Q [TH.Dec]
+postEditMethod name formName redirectName = do
+  let method = TH.mkName $ "post" ++ name ++ "Edit"
+  postEdit name formName redirectName method  
+
+{-
+Este conjunto de operaciones permite al programador realizar 
+las operaciones de eliminar  
+-}
+deleteCrudRoute :: String -> String -> TH.Q [TH.Dec]
+deleteCrudRoute name  redirectName = do
+  let method = TH.mkName $ "delete" ++ name ++ "DeleteR"
+  deleteCrud name redirectName method
+
+deleteCrudMethod :: String -> String -> TH.Q [TH.Dec]
+deleteCrudMethod name  redirectName = do
+  let method = TH.mkName $ "delete" ++ name ++ "Delete"
+  deleteCrud name  redirectName method
+
+{-
+Este conjunto de operaciones permite al programador realizar 
+las operaciones de listar  
+-}
+listCrudRoute :: String -> String -> TH.Q [TH.Dec]
+listCrudRoute name fieldListName = do
+  let method = TH.mkName $ "get" ++ name ++ "ListR"     
+  listCrud name fieldListName method
+
+listCrudMethod :: String -> String -> TH.Q [TH.Dec]
+listCrudMethod name fieldListName = do
+  let method = TH.mkName $ "get" ++ name ++ "List"     
+  listCrud name fieldListName method
+
+
+
+
+{-
+Este conjunto de operaciones desarrolla la logica de los hamlet
+-}
+getNew :: String -> String -> TH.Name ->  TH.Q [TH.Dec]
+getNew name formName method = do
+  let form = TH.varE $ TH.mkName formName
       action = TH.conE $ TH.mkName $ name ++ "NewR"
       body = [| do
                  (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ $form Nothing
@@ -28,10 +108,9 @@ getNew name formName = do
   return [typ,fun]
 
 
-postNew :: String -> String -> String ->  TH.Q [TH.Dec]
-postNew name formName redirectName = do
-           let method = TH.mkName $ "post" ++ name ++ "NewR"
-               form = TH.varE $ TH.mkName formName            
+postNew :: String -> String -> String -> TH.Name ->  TH.Q [TH.Dec]
+postNew name formName redirectName method = do
+           let form = TH.varE $ TH.mkName formName            
                action = TH.conE $ TH.mkName $ name ++ "NewR"
                redirectAction = TH.conE $ TH.mkName redirectName
                body = [| do
@@ -47,11 +126,10 @@ postNew name formName redirectName = do
            fun <- TH.funD method [TH.clause [] (TH.normalB body) []]
            return [typ,fun]
 
-getEdit :: String -> String -> TH.Q [TH.Dec]
-getEdit name formName = do
+getEdit :: String -> String -> TH.Name -> TH.Q [TH.Dec]
+getEdit name formName method = do
   entityName <- TH.newName "eId"
-  let method = TH.mkName $ "get" ++ name ++ "EditR"
-      form = TH.varE $ TH.mkName formName
+  let form = TH.varE $ TH.mkName formName
       action = TH.conE $ TH.mkName $ name ++ "EditR"
       entityId = TH.varE entityName
       entityParam = TH.varP entityName
@@ -66,11 +144,10 @@ getEdit name formName = do
   fun <- TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
   return [typ,fun]
 
-postEdit :: String -> String -> String -> TH.Q [TH.Dec]
-postEdit name formName redirectName = do
+postEdit :: String -> String -> String ->  TH.Name -> TH.Q [TH.Dec]
+postEdit name formName redirectName method= do
   entityName <- TH.newName "eId"
-  let method = TH.mkName $ "post" ++ name ++ "EditR"
-      form = TH.varE $ TH.mkName formName
+  let form = TH.varE $ TH.mkName formName
       action = TH.conE $ TH.mkName $ name ++ "EditR"
       entityId = TH.varE entityName
       entityParam = TH.varP entityName
@@ -90,11 +167,10 @@ postEdit name formName redirectName = do
   fun <- TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
   return [typ,fun]
 
-deleteCrud :: String  -> String ->  TH.Q [TH.Dec]
-deleteCrud name  redirectName=  do
+deleteCrud :: String  -> String -> TH.Name ->  TH.Q [TH.Dec]
+deleteCrud name  redirectName method=  do
   entityName <- TH.newName "eId"
-  let method = TH.mkName $ "delete" ++ name ++ "DeleteR"
-      entityId = TH.varE entityName
+  let entityId = TH.varE entityName
       entityParam = TH.varP entityName
       entityType  = TH.conT $ TH.mkName $ name ++ "Id"
       redirectAction = TH.conE $ TH.mkName redirectName      
@@ -105,10 +181,9 @@ deleteCrud name  redirectName=  do
   fun <- TH.funD method [TH.clause [entityParam] (TH.normalB body) []]
   return [typ,fun]
 
-listCrud :: String  -> String -> TH.Q [TH.Dec]
-listCrud name fieldListName =  do 
-  let method = TH.mkName $ "get" ++ name ++ "ListR"
-      fieldList = TH.varE $ TH.mkName fieldListName
+listCrud :: String  -> String -> TH.Name -> TH.Q [TH.Dec]
+listCrud name fieldListName method=  do 
+  let fieldList = TH.varE $ TH.mkName fieldListName
       newAction = TH.conE $ TH.mkName (name ++ "NewR") 
       editAction = TH.conE $ TH.mkName (name ++ "EditR")  
       deleteAction = TH.conE $ TH.mkName (name ++ "DeleteR")  
@@ -120,6 +195,10 @@ listCrud name fieldListName =  do
   fun <- TH.funD method [TH.clause [] (TH.normalB body) []]
   return [typ,fun]
 
+{-
+Este conjunto de operaciones general lo interfaz para crear editar y listar
+y el javascript para eliminar
+-}
 
 formHamlet :: forall site (m :: * -> *) a a1.
               (ToMarkup a, MonadThrow m,
@@ -192,3 +271,15 @@ function deletePost(deleteUrl) {
         }); 
 }
 |]
+
+-- formParam :: [String] ->  [(TH.Exp, TH.Pat,TH.Type)]
+{- formParam []      = []
+formParam (x:[])  = do 
+      entityName <- TH.newName $ "e" ++ x 
+      let  entityId = TH.varE entityName
+           entityParam = TH.varP entityName
+           entityType  = TH.conT $ TH.mkName $ x 
+      [(entityId,entityParam,entityType)]
+                     
+formParam (x:xs)  = []
+-}

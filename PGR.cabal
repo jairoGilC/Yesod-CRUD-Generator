@@ -23,6 +23,7 @@ library
                      Handler.Common
                      Handler.Home
                      Handler.Demo
+                     Handler.Demo2
                      Crud.Core
 
     if flag(dev) || flag(library-only)

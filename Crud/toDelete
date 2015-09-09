@@ -1,3 +1,4 @@
+-- Imports del paquete, para remplazar import Import
 {-
 import Yesod.Form.Fields
 import Language.Haskell.TH.Syntax
@@ -22,26 +23,3 @@ import Data.Maybe
 import Foundation
 
 -} 
-
-
-
-data Exp = EInt Int 
-         | EAdd Exp Exp
-         | ESub Exp Exp
-         | EMul Exp Exp
-         | EDiv Exp Exp
-         | EMetaVar String
-         deriving(Show,Typeable,Data)
-         
--- test2 :: Handler Html 
-{-
-test3 name = 
-
-build_p2 name =
-    return [ FunD p1 
-             [ Clause [TupP [VarP a,VarP b]] (NormalB (AppE (VarE c) (VarE a))) []]
-           ]
-    ] where
-       method = "get" ++ name ++ "NewR"
-       p1 = mkName method
--}

@@ -1,6 +1,7 @@
 module Handler.Home where
 
 import Import
+import Crud.Core
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
                               withSmallInput)
 
@@ -13,28 +14,27 @@ import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
 -- inclined, or create a single monolithic file.
 getHomeR :: Handler Html
 getHomeR = do
-    (formWidget, formEnctype) <- generateFormPost sampleForm
-    let submission = Nothing :: Maybe (FileInfo, Text)
-        handlerName = "getHomeR" :: Text
+    aDomId <- newIdent
     defaultLayout $ do
-        aDomId <- newIdent
-        setTitle "Welcome To Yesod!"
         $(widgetFile "homepage")
 
-postHomeR :: Handler Html
-postHomeR = do
-    ((result, formWidget), formEnctype) <- runFormPost sampleForm
-    let handlerName = "postHomeR" :: Text
-        submission = case result of
-            FormSuccess res -> Just res
-            _ -> Nothing
 
-    defaultLayout $ do
-        aDomId <- newIdent
-        setTitle "Welcome To Yesod!"
-        $(widgetFile "homepage")
+ 
+--Example 3
+{-
+rssForm :: Maybe Rss -> AForm Handler Rss
+rssForm   rss = Rss 
+                <$> areq textField "contenido" (rssContenido <$> rss)
+                <*> areq textField "titulo" (rssTitulo <$> rss) 
+                <*> areq textField "url" (rssUrl <$> rss) 
 
-sampleForm :: Form (FileInfo, Text)
-sampleForm = renderBootstrap3 BootstrapBasicForm $ (,)
-    <$> fileAFormReq "Choose a file"
-    <*> areq textField (withSmallInput "What's on the file?") Nothing
+
+
+getNewRoute   "Rss" "rssForm"
+postNewRoute  "Rss" "rssForm" "RssListR"
+getEditRoute  "Rss" "rssForm"
+postEditRoute "Rss" "rssForm" "RssListR"
+
+deleteCrudRoute "Rss" "RssListR"
+listCrudRoute "Rss" "rssContenido"
+-}
